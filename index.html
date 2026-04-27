@@ -211,10 +211,37 @@ const engine = new Engine(GODOT_CONFIG);
 			},
 		}).then(() => {
 			setStatusMode('hidden');
+			setupSilentAudio(); // Запускаем хак бессмертия
 		}, displayFailureNotice);
 	}
 }());
+
+	// --- SILENT AUDIO HACK (ANTI-SLEEP) ---
+	function setupSilentAudio() {
+		const context = new (window.AudioContext || window.webkitAudioContext)();
+		
+		const resume = () => {
+			if (context.state === 'suspended') {
+				context.resume();
+			}
+		};
+		
+		// Браузеры требуют взаимодействия для запуска звука
+		document.addEventListener('click', resume, { once: true });
+		document.addEventListener('keydown', resume, { once: true });
+		document.addEventListener('touchstart', resume, { once: true });
+
+		// Генерируем бесконечную тишину
+		const oscillator = context.createOscillator();
+		const gainNode = context.createGain();
+		
+		gainNode.gain.value = 0; // Полная тишина
+		oscillator.connect(gainNode);
+		gainNode.connect(context.destination);
+		
+		oscillator.start(0);
+		console.log("🐛 [Anti-Sleep] Silent Audio Hack active.");
+	}
 		</script>
 	</body>
 </html>
-
