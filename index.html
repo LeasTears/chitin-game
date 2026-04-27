@@ -109,9 +109,9 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="chitin.js?v=202604280151"></script>
+		<script src="chitin.js?v=202604280223"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"chitin","experimentalVK":false,"fileSizes":{"chitin.pck?v=202604280151":715876,"chitin.wasm?v=202604280151":35749181},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"chitin","experimentalVK":false,"fileSizes":{"chitin.pck?v=202604280223":715876,"chitin.wasm?v=202604280223":35749181},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -211,37 +211,26 @@ const engine = new Engine(GODOT_CONFIG);
 			},
 		}).then(() => {
 			setStatusMode('hidden');
-			setupSilentAudio(); // Запускаем хак бессмертия
+			setupSilentAudio();
 		}, displayFailureNotice);
 	}
 }());
 
-	// --- SILENT AUDIO HACK (ANTI-SLEEP) ---
-	function setupSilentAudio() {
-		const context = new (window.AudioContext || window.webkitAudioContext)();
-		
-		const resume = () => {
-			if (context.state === 'suspended') {
-				context.resume();
-			}
-		};
-		
-		// Браузеры требуют взаимодействия для запуска звука
-		document.addEventListener('click', resume, { once: true });
-		document.addEventListener('keydown', resume, { once: true });
-		document.addEventListener('touchstart', resume, { once: true });
-
-		// Генерируем бесконечную тишину
-		const oscillator = context.createOscillator();
-		const gainNode = context.createGain();
-		
-		gainNode.gain.value = 0; // Полная тишина
-		oscillator.connect(gainNode);
-		gainNode.connect(context.destination);
-		
-		oscillator.start(0);
-		console.log("🐛 [Anti-Sleep] Silent Audio Hack active.");
-	}
+function setupSilentAudio() {
+	const context = new (window.AudioContext || window.webkitAudioContext)();
+	const resume = () => { if (context.state === 'suspended') context.resume(); };
+	document.addEventListener('click', resume, { once: true });
+	document.addEventListener('keydown', resume, { once: true });
+	document.addEventListener('touchstart', resume, { once: true });
+	const oscillator = context.createOscillator();
+	const gainNode = context.createGain();
+	gainNode.gain.value = 0;
+	oscillator.connect(gainNode);
+	gainNode.connect(context.destination);
+	oscillator.start(0);
+	console.log("🐛 [Anti-Sleep] Silent Audio Hack active.");
+}
 		</script>
 	</body>
 </html>
+
