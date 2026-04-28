@@ -109,9 +109,9 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="chitin.js?v=202604282304"></script>
+		<script src="chitin.js?v=202604290159"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"chitin","experimentalVK":false,"fileSizes":{"chitin.pck?v=202604282304":720420,"chitin.wasm?v=202604282304":35749181},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"chitin","experimentalVK":false,"fileSizes":{"chitin.pck?v=202604290159":720420,"chitin.wasm?v=202604290159":35749181},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -211,25 +211,9 @@ const engine = new Engine(GODOT_CONFIG);
 			},
 		}).then(() => {
 			setStatusMode('hidden');
-			setupSilentAudio();
 		}, displayFailureNotice);
 	}
 }());
-
-function setupSilentAudio() {
-	const context = new (window.AudioContext || window.webkitAudioContext)();
-	const resume = () => { if (context.state === 'suspended') context.resume(); };
-	document.addEventListener('click', resume, { once: true });
-	document.addEventListener('keydown', resume, { once: true });
-	document.addEventListener('touchstart', resume, { once: true });
-	const oscillator = context.createOscillator();
-	const gainNode = context.createGain();
-	gainNode.gain.value = 0;
-	oscillator.connect(gainNode);
-	gainNode.connect(context.destination);
-	oscillator.start(0);
-	console.log("🐛 [Anti-Sleep] Silent Audio Hack active.");
-}
 		</script>
 	</body>
 </html>
